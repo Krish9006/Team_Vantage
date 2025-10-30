@@ -1,9 +1,12 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { Menu, X } from "lucide-react";
 
 export default function Header() {
   const path = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const navLinks = [
     { name: "Home", path: "/" },
@@ -30,8 +33,8 @@ export default function Header() {
           Team Vantage
         </Link>
 
-        {/* Navigation */}
-        <nav className="flex items-center gap-6 text-white font-medium">
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center gap-6 text-white font-medium">
           {navLinks.map((link, i) => (
             <Link
               key={i}
@@ -41,7 +44,6 @@ export default function Header() {
               }`}
             >
               {link.name}
-              {/* Active underline */}
               <span
                 className={`absolute left-0 -bottom-1 h-[2px] w-full bg-yellow-300 
                   transition-transform duration-300 
@@ -50,7 +52,35 @@ export default function Header() {
             </Link>
           ))}
         </nav>
+
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="md:hidden text-white"
+        >
+          {menuOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
       </div>
+
+      {/* Mobile Navigation */}
+      {menuOpen && (
+        <div className="md:hidden bg-indigo-700/95 backdrop-blur-lg border-t border-white/10">
+          <nav className="flex flex-col items-center py-4 space-y-4 text-white font-medium">
+            {navLinks.map((link, i) => (
+              <Link
+                key={i}
+                href={link.path}
+                onClick={() => setMenuOpen(false)}
+                className={`transition-all duration-300 hover:text-yellow-300 ${
+                  path === link.path ? "text-yellow-300" : "text-white"
+                }`}
+              >
+                {link.name}
+              </Link>
+            ))}
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
